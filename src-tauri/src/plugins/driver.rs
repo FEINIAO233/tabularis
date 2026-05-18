@@ -38,6 +38,11 @@ impl PluginProcess {
         } else {
             Command::new(&executable_path)
         };
+        #[cfg(windows)]
+        {
+            use std::os::windows::process::CommandExt;
+            cmd.as_std_mut().creation_flags(0x08000000); // CREATE_NO_WINDOW
+        }
         let child = cmd
             .stdin(std::process::Stdio::piped())
             .stdout(std::process::Stdio::piped())
